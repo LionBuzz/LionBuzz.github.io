@@ -15,7 +15,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 
-  <title>EC2-Instance-Scheduler-part-2</title>
+  <title>Journey of life from Associate to an Engineer</title>
 
   <meta name="author" content="Prasiddha Bista" />
 
@@ -67,19 +67,19 @@
   
 
   
-  <meta property="og:title" content="EC2-Instance-Scheduler-part-2" />
+  <meta property="og:title" content="Journey of life from Associate to an Engineer" />
   
 
    
-  <meta property="og:description" content="This is the second part of Instance Scheduler where I am going to explain how a lambda function which when invoked by cloudwatch rule, triggers a SNS notification which sends me an email. Everytime, the specified instance changes state (start,stop,pending), cloudwatch rule triggers the lambda function which then sends sns...">
+  <meta property="og:description" content="I believe most of you viewing this article have come across my previous article which describes how I got an opportunity to work at Versent. If not, you should probably check it out :). The first few months at Versent was all about getting familiar about the AWS services we...">
   
 
 
   <meta property="og:type" content="website" />
 
   
-  <meta property="og:url" content="https://blog.avitechnos.com/2019-03-16-EC2-Instance-Scheduler-2/" />
-  <link rel="canonical" href="https://blog.avitechnos.com/2019-03-16-EC2-Instance-Scheduler-2/" />
+  <meta property="og:url" content="https://blog.avitechnos.com/2019-10-03-Journey-of-Life(Associate-to-Engineer)/" />
+  <link rel="canonical" href="https://blog.avitechnos.com/2019-10-03-Journey-of-Life(Associate-to-Engineer)/" />
   
 
   
@@ -93,11 +93,11 @@
   <meta name="twitter:creator" content="@" />
 
   
-  <meta name="twitter:title" content="EC2-Instance-Scheduler-part-2" />
+  <meta name="twitter:title" content="Journey of life from Associate to an Engineer" />
   
 
   
-  <meta name="twitter:description" content="This is the second part of Instance Scheduler where I am going to explain how a lambda function which when invoked by cloudwatch rule, triggers a SNS notification which sends me an email. Everytime, the specified instance changes state (start,stop,pending), cloudwatch rule triggers the lambda function which then sends sns...">
+  <meta name="twitter:description" content="I believe most of you viewing this article have come across my previous article which describes how I got an opportunity to work at Versent. If not, you should probably check it out :). The first few months at Versent was all about getting familiar about the AWS services we...">
   
 
   
@@ -225,11 +225,11 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         <div class="post-heading">
-          <h1>EC2-Instance-Scheduler-part-2</h1>
+          <h1>Journey of life from Associate to an Engineer</h1>
 		  
 		  
 		  
-		  <span class="post-meta">Posted on March 16, 2019</span>
+		  <span class="post-meta">Posted on October 3, 2019</span>
 		  
         </div>
       </div>
@@ -249,57 +249,23 @@
       
 
       <article role="main" class="blog-post">
-        <p>This is the second part of Instance Scheduler where I am going to explain how a lambda function which when invoked by cloudwatch rule, triggers a SNS notification which sends me an email.
-Everytime, the specified instance changes state (start,stop,pending), cloudwatch rule triggers the lambda function which then sends sns notification via email to me.</p>
+        <p>I believe most of you viewing this article have come across my previous article which describes how I got an opportunity to work at Versent. If not, you should probably check it out :).</p>
 
-<p>Let’s see what the cloudwatch rule looks like,
-<img src="/img/cw.png" alt="Markdown Monster icon" style="float: left; margin-right: 10px;" /></p>
+<p>The first few months at Versent was all about getting familiar about the AWS services we use everyday. I spent a fair bit of time in ACloudGuru and Linux Academy trying to get my first two certifications done; AWS Cloud Practitioner and AWS Solutions Architect Associate. It was tough because I wasn’t familiar with the services nor I had any past experience. But I made it past them within the first 2 and a half months of working at Versent. At that moment, I thought I had learnt so much and I will be able to do stuff on my own (totally underestimated the vast IT Industry at this point).</p>
 
-<p>Here is  my lambda function,</p>
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">boto3</span>
-<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Process</span>
-<span class="n">ec2_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s">'ec2'</span><span class="p">)</span>
-<span class="n">ec2_resource</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s">'ec2'</span><span class="p">)</span>
-<span class="n">state</span> <span class="o">=</span> <span class="n">ec2_resource</span><span class="o">.</span><span class="n">Instance</span><span class="p">(</span><span class="s">'id'</span><span class="p">)</span>
-<span class="n">paginator</span> <span class="o">=</span> <span class="n">ec2_client</span><span class="o">.</span><span class="n">get_paginator</span><span class="p">(</span><span class="s">'describe_instances'</span><span class="p">)</span>
+<p>Then I was provided with an opportunity to work in an actual project, which was really the initial phase of my development and learning process. I spent a whole week in plannings for a new product that we are working on but I could only grab about 40% of what was being discussed in the meetings because I was unfamiliar with so much in the technology space that was being discussed in those meetings. That’s when I realized that although the certifications gave me an overview of most of the services used in the AWS space, I had no idea of how to actually put them together! And I noticed that we use acronyms heavily, so I would write them all down in my notebook and later get some feedback on those from an engineer. So you can guess, I had so many unknown unknowns and I was confused.</p>
 
-<span class="k">def</span> <span class="nf">get_inst</span><span class="p">():</span>
-    <span class="n">pages</span> <span class="o">=</span> <span class="n">paginator</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span>
-         <span class="n">Filters</span><span class="o">=</span><span class="p">[</span>
-            <span class="p">{</span>
-               <span class="s">'Name'</span><span class="p">:</span> <span class="s">'tag-key'</span><span class="p">,</span>
-                <span class="s">'Values'</span><span class="p">:</span> <span class="p">[</span>
-                    <span class="s">'ppc-scheduler'</span><span class="p">,</span>
-                <span class="p">]</span>
-            <span class="p">},</span>
-        <span class="p">],</span>
-    <span class="p">)</span>
-    <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="n">pages</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">page</span>
-        
+<p>Then came questions from the engineer; he assessed my knowledge to see the level of maturity I had in regards to the ways of working and technologies used. The first question he asked was, “Do you know how to use GitHub for development?“. At this point, I am thinking, “TAFE has taught me a thing or two like how to commit and push to a repository, so I should be proficient enough to say yes at this point”. And so I said yes (not in a confident way). Immediately, the follow-up statement from him was, “Show me how you rebase”. Then I am like, I made the wrong decision to say yes. So, to show me how it’s done, he made me a little note to start with as you can see in the pictures below,</p>
 
-<span class="k">def</span> <span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
-    <span class="n">instances</span> <span class="o">=</span> <span class="n">get_inst</span><span class="p">()</span> <span class="c"># gets the instances with specified tag</span>
-        
-    <span class="n">instance_ids</span> <span class="o">=</span> <span class="p">[]</span>
-    
-    <span class="k">for</span> <span class="n">reservation</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">[</span><span class="s">'Reservations'</span><span class="p">]:</span>
-        <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">reservation</span><span class="p">[</span><span class="s">'Instances'</span><span class="p">]:</span>
-            <span class="n">instance_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instance</span><span class="p">[</span><span class="s">'InstanceId'</span><span class="p">])</span>
-            
-    <span class="n">MY_SNS_TOPIC_ARN</span> <span class="o">=</span> <span class="s">'arn:aws:sns:ap-southeast-2:2222222222:pras-test'</span>
-    <span class="n">sns_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s">'sns'</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">instance_id</span> <span class="ow">in</span> <span class="n">instance_ids</span><span class="p">:</span>
-        <span class="n">sns_client</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span>
-            <span class="n">TopicArn</span> <span class="o">=</span> <span class="n">MY_SNS_TOPIC_ARN</span><span class="p">,</span>
-            <span class="n">Subject</span> <span class="o">=</span> <span class="s">'Instance Change State: '</span> <span class="o">+</span> <span class="n">instance_id</span><span class="p">,</span>
-            <span class="n">Message</span> <span class="o">=</span> <span class="s">'Instance '</span> <span class="o">+</span> <span class="n">instance_id</span> <span class="o">+</span> <span class="s">' has changed state.</span><span class="se">\n</span><span class="s">'</span> <span class="o">+</span>
-                      <span class="s">'State is: '</span> <span class="o">+</span> <span class="n">instance</span><span class="p">[</span><span class="s">'State'</span><span class="p">][</span><span class="s">'Name'</span><span class="p">]</span>
-        <span class="p">)</span>
-</code></pre></div></div>
-<p>Here is a snippet of my sns notification sent via email,</p>
+<p><img src="/img/part-1-git.jpeg" alt="Markdown Monster icon" style="float: center; margin-right: 50px;" /></p>
 
-<p><img src="/img/sns.png" alt="Markdown Monster icon" style="float: left; margin-right: 10px;" /></p>
+<p><img src="/img/part-2-git.jpeg" alt="Markdown Monster icon" style="float: center; margin-right: 50px;" /></p>
+
+<p>I would like to thank all the engineers in my team, and everyone in Versent family for being supportive along the way to this day! I appreciate everyone ! In the past year that I have been at Versent, I have always come to work happy and left with a smile on my face. This is what we all want, don’t we? We should be happy with everything we do and if we are not, there has to be something wrong and steps should be taken by ourselves to find the right job we want to do and be happy. “NO STRESS IS THE WAY TO GO!”</p>
+
+<p>And then, after I started on the project, I started learning more and more everyday. I asked 100’s of questions everyday and my fellow colleagues always supported and answered and helped me out! Kudos to you all! Everyday for me has been a opportunity to learn and grow, and I never let myself down, I have been learning and I will not stop! And hard work has paid off for me once again. At Versent, people are valued over anything else and this is just another example!</p>
+
+<p>That’s it for now, let me know how you feel about the article. I just wanted to share my journey with people out there who have just started their journey in IT Industry. G’day!</p>
 
       </article>
 
@@ -308,19 +274,17 @@ Everytime, the specified instance changes state (start,stop,pending), cloudwatch
           Tags:
           
           
-            <a href="/tags#AWS">AWS</a>
+            <a href="/tags#Life">Life</a>
           
-            <a href="/tags#EC2">EC2</a>
+            <a href="/tags#Engineer">Engineer</a>
           
-            <a href="/tags#CLOUD">CLOUD</a>
+            <a href="/tags#Innovation">Innovation</a>
           
-            <a href="/tags#LAMBDA">LAMBDA</a>
+            <a href="/tags#Timing">Timing</a>
           
-            <a href="/tags#RDS">RDS</a>
+            <a href="/tags#Progress">Progress</a>
           
-            <a href="/tags#GITHUB">GITHUB</a>
-          
-            <a href="/tags#DYNAMODB">DYNAMODB</a>
+            <a href="/tags#Happy">Happy</a>
           
           
         </div>
@@ -337,7 +301,7 @@ Everytime, the specified instance changes state (start,stop,pending), cloudwatch
 
   
   <!--- Share on Twitter -->
-    <a href="https://twitter.com/intent/tweet?text=EC2-Instance-Scheduler-part-2+https://blog.avitechnos.com/2019-03-16-EC2-Instance-Scheduler-2/"
+    <a href="https://twitter.com/intent/tweet?text=Journey+of+life+from+Associate+to+an+Engineer+https://blog.avitechnos.com/2019-10-03-Journey-of-Life(Associate-to-Engineer)/"
       class="btn btn-social-icon btn-twitter" title="Share on Twitter">
       <span class="fa fa-fw fa-twitter" aria-hidden="true"></span>
       <span class="sr-only">Twitter</span>
@@ -346,7 +310,7 @@ Everytime, the specified instance changes state (start,stop,pending), cloudwatch
 
   
   <!--- Share on Facebook -->
-    <a href="https://www.facebook.com/sharer/sharer.php?u=https://blog.avitechnos.com/2019-03-16-EC2-Instance-Scheduler-2/"
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https://blog.avitechnos.com/2019-10-03-Journey-of-Life(Associate-to-Engineer)/"
       class="btn btn-social-icon btn-facebook" title="Share on Facebook">
       <span class="fa fa-fw fa-facebook" aria-hidden="true"></span>
       <span class="sr-only">Facebook</span>
@@ -357,7 +321,7 @@ Everytime, the specified instance changes state (start,stop,pending), cloudwatch
 
   
   <!--- Share on LinkedIn -->
-    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://blog.avitechnos.com/2019-03-16-EC2-Instance-Scheduler-2/"
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://blog.avitechnos.com/2019-10-03-Journey-of-Life(Associate-to-Engineer)/"
       class="btn btn-social-icon btn-linkedin" title="Share on LinkedIn">
       <span class="fa fa-fw fa-linkedin" aria-hidden="true"></span>
       <span class="sr-only">LinkedIn</span>
@@ -373,13 +337,9 @@ Everytime, the specified instance changes state (start,stop,pending), cloudwatch
       <ul class="pager blog-pager">
         
         <li class="previous">
-          <a href="/2019-03-14-Ec2-Instance-Scheduler-1/" data-toggle="tooltip" data-placement="top" title="EC2-Instance-Scheduler">&larr; Previous Post</a>
+          <a href="/2019-08-02-First-Year-At-Versent/" data-toggle="tooltip" data-placement="top" title="First year at Versent!!!">&larr; Previous Post</a>
         </li>
         
-        
-        <li class="next">
-          <a href="/2019-05-31-Connectivity-using-VPN-and-PrivateLink/" data-toggle="tooltip" data-placement="top" title="Networking Architecture - Hybrid">Next Post &rarr;</a>
-        </li>
         
       </ul>
 
@@ -419,8 +379,8 @@ Everytime, the specified instance changes state (start,stop,pending), cloudwatch
           <input type="url" id="comment-form-url" name="fields[url]" tabindex="4"/>
         </div>
         <div class="form-group hidden" style="display: none;">
-          <input type="hidden" name="options[origin]" value="https://blog.avitechnos.com/2019-03-16-EC2-Instance-Scheduler-2/">
-          <input type="hidden" name="options[slug]" value="EC2-Instance-Scheduler-2">
+          <input type="hidden" name="options[origin]" value="https://blog.avitechnos.com/2019-10-03-Journey-of-Life(Associate-to-Engineer)/">
+          <input type="hidden" name="options[slug]" value="Journey-of-Life(Associate-to-Engineer)">
           <label for="comment-form-location">Not used. Leave blank if you are a human.</label>
           <input type="text" id="comment-form-location" name="fields[hidden]" autocomplete="off"/>
           

@@ -136,8 +136,8 @@ staticman:
   reCaptcha:
     # reCaptcha for Staticman (OPTIONAL)
     # If you use reCaptcha, you must also set these parameters in staticman.yml
-    siteKey  : 6LcUBZYUAAAAABlkyzrf7TnB3Eahl36OX1DhbJ0J # Use your own site key, you need to apply for one on Google
-    secret   : G02R+RR0hNDii83KUW6yNGnbpLbDpGHSDjpKNAPvKaEYS2FW4/MCj5CoSEe7MFBmkXFMrLw69AiomIQH9rvvJY1fpaMXt4ZjHM6Ucu1a5uy3o5K1gjxZ6KYsNhN3GKRSJw9/9PnPrbxdmy5C1NjDWkFN7mipIIU76LaxezK3HDD7T8DQIW4w28fOc+KZ3NiUWuv+E4GKzjDxe+1ktqtC3SsjvYgzNohRVY0WhPfqIHJXWrVEbr7XYR6m2PfW4X+2FEyhIFbMxGVsRcR90Gpr5myiLl+Sukkr8MBLqBhr/2Y20OSa7/TdEBueXHTYEWvsUE92X58aN1LFm38kK2p3DA== # ENCRYPT your password by going to https://staticman3.herokuapp.com/v3/encrypt/<your-site-secret>
+    siteKey  : # Use your own site key, you need to apply for one on Google
+    secret   : # ENCRYPT your password by going to https://staticman3.herokuapp.com/v3/encrypt/<your-site-secret>
 
 # --- Misc --- #
 
@@ -251,5 +251,3 @@ plugins:
   - jekyll-paginate
   - jekyll-sitemap
 
-# Beautiful Jekyll / Dean Attali
-# 2fc73a3a967e97599c9763d05e564189

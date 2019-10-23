@@ -7,6 +7,28 @@
     <atom:link href="https://blog.avitechnos.com/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Journey of life from Associate to an Engineer</title>
+        <description>
+          
+          I believe most of you viewing this article have come across my previous article which describes how I got an opportunity to work at Versent. If not, you should probably check it out :). The first few months at Versent was all about getting familiar about the AWS services we...
+        </description>
+        <pubDate>Thu, 03 Oct 2019 00:00:00 +1000</pubDate>
+        <link>https://blog.avitechnos.com/2019-10-03-Journey-of-Life(Associate-to-Engineer)/</link>
+        <guid isPermaLink="true">https://blog.avitechnos.com/2019-10-03-Journey-of-Life(Associate-to-Engineer)/</guid>
+      </item>
+    
+      <item>
+        <title>First year at Versent!!!</title>
+        <description>
+          
+          Celebrating one year at Versent !!! :) What an amazing time to be alive! Time really flies! A year ago, working in Hospitality at the airport, studying Networking at TAFE, I was constantly thinking about my career, what my future would look like in a few years to come. The...
+        </description>
+        <pubDate>Fri, 02 Aug 2019 00:00:00 +1000</pubDate>
+        <link>https://blog.avitechnos.com/2019-08-02-First-Year-At-Versent/</link>
+        <guid isPermaLink="true">https://blog.avitechnos.com/2019-08-02-First-Year-At-Versent/</guid>
+      </item>
+    
+      <item>
         <title>Site-to-Site VPN using OpenSwan EC2 Instance and Virtual Private Gateway</title>
         <description>
           
