@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>A Blog for X-plorer's</title>
+    <description>Sharing ideas and creativity!</description>
+    <link>https://blog.avitechnos.com</link>
+    <atom:link href="https://blog.avitechnos.com/feed.xml" rel="self" type="application/rss+xml" />
+    
+      <item>
+        <title>Site-to-Site VPN using OpenSwan EC2 Instance and Virtual Private Gateway</title>
+        <description>
+          
+          IPSec (IP Security) Protocol Suite is a set of network security protocols, conisting of different protocols to provide Confidentiality, Integrity, Authentication (CIA) and anti-replay capabilities. IPSEC provides two important capabilities namely Encryption and Authentication and it can be used in two modes namely Tunnel and Transport. IPSec VPN works by...
+        </description>
+        <pubDate>Mon, 08 Jul 2019 00:00:00 +1000</pubDate>
+        <link>https://blog.avitechnos.com/2019-07-08-Site-to-Site-VPN/</link>
+        <guid isPermaLink="true">https://blog.avitechnos.com/2019-07-08-Site-to-Site-VPN/</guid>
+      </item>
+    
+      <item>
+        <title>Encrypting Systems Manager Sessions</title>
+        <description>
+          
+          I recently discovered that we can encrypt ec2 sessions launched via AWS Systems Manager. I figured it needs a few things in place to make it happen, A KMS key to be used for encrypting sessions with the following policy attached to it. Reference &quot;Version&quot;: &quot;2012-10-17&quot;, &quot;Id&quot;: &quot;key-default-1&quot;, &quot;Statement&quot;: [...
+        </description>
+        <pubDate>Wed, 05 Jun 2019 00:00:00 +1000</pubDate>
+        <link>https://blog.avitechnos.com/2019-06-05-Encrypting-Sessions-Systems-Manager/</link>
+        <guid isPermaLink="true">https://blog.avitechnos.com/2019-06-05-Encrypting-Sessions-Systems-Manager/</guid>
+      </item>
+    
+      <item>
+        <title>Networking Architecture - Hybrid</title>
+        <description>
+          
+          Yet another interesting architecture including AWS services like AWS Site-to-Site VPN, PrivateLink and Transit Gateway. This solution enables connectivity between a Corporate Data Center and workloads deployed in AWS Environment. Let’s say we want customer support personnel to connect to their hybrid deployed workloads in AWS from the data center...
+        </description>
+        <pubDate>Fri, 31 May 2019 00:00:00 +1000</pubDate>
+        <link>https://blog.avitechnos.com/2019-05-31-Connectivity-using-VPN-and-PrivateLink/</link>
+        <guid isPermaLink="true">https://blog.avitechnos.com/2019-05-31-Connectivity-using-VPN-and-PrivateLink/</guid>
+      </item>
+    
+      <item>
+        <title>EC2-Instance-Scheduler-part-2</title>
+        <description>
+          
+          This is the second part of Instance Scheduler where I am going to explain how a lambda function which when invoked by cloudwatch rule, triggers a SNS notification which sends me an email. Everytime, the specified instance changes state (start,stop,pending), cloudwatch rule triggers the lambda function which then sends sns...
+        </description>
+        <pubDate>Sat, 16 Mar 2019 00:00:00 +1100</pubDate>
+        <link>https://blog.avitechnos.com/2019-03-16-EC2-Instance-Scheduler-2/</link>
+        <guid isPermaLink="true">https://blog.avitechnos.com/2019-03-16-EC2-Instance-Scheduler-2/</guid>
+      </item>
+    
+      <item>
+        <title>EC2-Instance-Scheduler</title>
+        <description>
+          
+          One fine day at work, I was playing around with “Cloud Custodian” which is a tool to schedule instances on-and-off during certain time provided. For example, we would want to have those instances running between 9am to 5pm weekdays. This helps us reduce cost specially if we have 1000’s of...
+        </description>
+        <pubDate>Thu, 14 Mar 2019 00:00:00 +1100</pubDate>
+        <link>https://blog.avitechnos.com/2019-03-14-Ec2-Instance-Scheduler-1/</link>
+        <guid isPermaLink="true">https://blog.avitechnos.com/2019-03-14-Ec2-Instance-Scheduler-1/</guid>
+      </item>
+    
+  </channel>
+</rss>

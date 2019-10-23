@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Beautiful Jekyll | MIT license | Copyright Dean Attali 2016 -->
+  <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-143824726-1"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-143824726-1');
+  </script>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+
+  <title>Site-to-Site VPN using OpenSwan EC2 Instance and Virtual Private Gateway</title>
+
+  <meta name="author" content="Prasiddha Bista" />
+
+  
+
+  <link rel="alternate" type="application/rss+xml" title="A Blog for X-plorer's - Sharing ideas and creativity!" href="/feed.xml" />
+
+  
+
+  
+
+  
+
+
+  
+    
+      
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css" />
+
+
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    
+      <link rel="stylesheet" href="/css/bootstrap-social.css" />
+    
+      <link rel="stylesheet" href="/css/main.css" />
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+    
+  
+
+  
+
+  
+
+  
+
+    <!-- Facebook OpenGraph tags -->
+  
+
+  
+  <meta property="og:title" content="Site-to-Site VPN using OpenSwan EC2 Instance and Virtual Private Gateway" />
+  
+
+   
+  <meta property="og:description" content="IPSec (IP Security) Protocol Suite is a set of network security protocols, conisting of different protocols to provide Confidentiality, Integrity, Authentication (CIA) and anti-replay capabilities. IPSEC provides two important capabilities namely Encryption and Authentication and it can be used in two modes namely Tunnel and Transport. IPSec VPN works by...">
+  
+
+
+  <meta property="og:type" content="website" />
+
+  
+  <meta property="og:url" content="https://blog.avitechnos.com/2019-07-08-Site-to-Site-VPN/" />
+  <link rel="canonical" href="https://blog.avitechnos.com/2019-07-08-Site-to-Site-VPN/" />
+  
+
+  
+  <meta property="og:image" content="https://blog.avitechnos.com/img/passport.jpg" />
+  
+
+
+  <!-- Twitter summary cards -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@" />
+  <meta name="twitter:creator" content="@" />
+
+  
+  <meta name="twitter:title" content="Site-to-Site VPN using OpenSwan EC2 Instance and Virtual Private Gateway" />
+  
+
+  
+  <meta name="twitter:description" content="IPSec (IP Security) Protocol Suite is a set of network security protocols, conisting of different protocols to provide Confidentiality, Integrity, Authentication (CIA) and anti-replay capabilities. IPSEC provides two important capabilities namely Encryption and Authentication and it can be used in two modes namely Tunnel and Transport. IPSec VPN works by...">
+  
+
+  
+  <meta name="twitter:image" content="https://blog.avitechnos.com/img/passport.jpg" />
+  
+
+  
+
+  
+  <!-- Staticman -->
+  <link rel="stylesheet" href="/css/staticman.css" />
+  
+
+</head>
+
+
+  <body>
+
+    
+
+  
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+        <a class="navbar-brand" href="https://blog.avitechnos.com">A Blog for X-plorer's</a>
+      
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+          <li>
+            
+
+
+
+
+
+
+<a href="/aboutme">About Me</a>
+
+          </li>
+        
+        
+        
+          <li class="navlinks-container">
+            <a class="navlinks-parent" href="javascript:void(0)">Resources</a>
+            <div class="navlinks-children">
+              
+                
+                  
+
+
+
+
+
+
+<a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+
+                
+              
+                
+                  
+
+
+
+
+
+
+<a href="http://www.markdowntutorial.com/">Learn markdown</a>
+
+                
+              
+                
+                  
+
+
+
+
+
+
+<a href="https://pages.github.com/">GitHub Pages</a>
+
+                
+              
+            </div>
+          </li>
+        
+        
+      </ul>
+    </div>
+
+	
+	<div class="avatar-container">
+	  <div class="avatar-img-border">
+	    <a href="https://blog.avitechnos.com">
+	      <img class="avatar-img" src="/img/passport.jpg" />
+		</a>
+	  </div>
+	</div>
+	
+
+  </div>
+</nav>
+
+
+    <!-- TODO this file has become a mess, refactor it -->
+
+
+
+
+
+<header class="header-section ">
+
+<div class="intro-header no-img">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <h1>Site-to-Site VPN using OpenSwan EC2 Instance and Virtual Private Gateway</h1>
+		  
+		  
+		  
+		  <span class="post-meta">Posted on July 8, 2019</span>
+		  
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
+      
+
+      <article role="main" class="blog-post">
+        <p>IPSec (IP Security) Protocol Suite is a set of network security protocols, conisting of different protocols to provide Confidentiality, Integrity, Authentication (CIA) and anti-replay capabilities. IPSEC provides two important capabilities namely <code class="highlighter-rouge">Encryption</code> and <code class="highlighter-rouge">Authentication</code> and it can be used in two modes namely <code class="highlighter-rouge">Tunnel</code> and <code class="highlighter-rouge">Transport</code>.</p>
+
+<p><code class="highlighter-rouge">IPSec VPN</code> works by authenticating and encrypting IP packets from source to destination ensuring security and privacy over Internet. IPsec VPN are mostly utilized in scenarios where two remote locations need to be connected but securely. One use case of <code class="highlighter-rouge">IPSEC VPN</code> is where a company hosts applications on a cloud network like AWS and wants to enable communication between thier data center and applications running on cloud. All communication data in transit must be confidential and encrypted, hence the use of VPN technology like <code class="highlighter-rouge">IPSEC VPN</code> is a must.</p>
+
+<p>In this post, I will be going through a step-by-step practical guide on how to create <code class="highlighter-rouge">IPSEC VPN</code> in tunnel mode between two AWS accounts. One side of the connection will use a OpenSwan Instance(VPC-A) for terminating the VPN connection and the other will terminate at a Virtual Private Gateway(VGW)(VPC-B) .</p>
+
+<h1 id="diagram">Diagram</h1>
+<p><img src="/img/architecturevpn1.png" alt="Markdown Monster icon" style="float: center; margin-right: 50px;" /></p>
+
+<h1 id="steps">Steps</h1>
+
+<h3 id="deploying-the-ec2-instance">Deploying the EC2 instance</h3>
+
+<ul>
+  <li>The first step is to launch a new EC2 instance to run Openswan:
+    <ul>
+      <li>Open the AWS console and navigate to EC2 under services.</li>
+      <li>Launch a new EC2 instance.</li>
+      <li>Choose your Linux distribution (In this guide, we will be using the Amazon Linux 2 AMI but Openswan runs on most Linux distributions)</li>
+      <li>Recommended size – m4.large instance. Some developers experienced large amount of packets being dropped with any of the t2 series instances. But for the purpose of this demonstration, I will use t2.micro which falls under free tier.</li>
+      <li>Place the instance in a Public subnet.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Each EC2 instance performs source/destination checks by default. This means that the instance must be the source or destination of any traffic it sends or receives. However, a VPN instance must be able to send and receive traffic when the source or destination is not itself. Therefore, you must disable source/destination checks on the VPN instance.</p>
+  </li>
+  <li>
+    <p>Assign an EIP (Elastic IP) to the Openswan VPN instance.</p>
+  </li>
+  <li>Modify the Openswan Security Group
+    <ul>
+      <li>Open the necessary inbound ports from your VPC. This will be based on the type of traffic you are sending through the tunnel.</li>
+      <li>Open UDP ports 4500 and UDP port 500 from the remote gateway you are establishing the tunnel with. This will allow the ipsec connection to be established.
+<img src="/img/sg.png" alt="Markdown Monster icon" style="float: center; margin-right: 30px;" />
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Here, 13.236.192.60/32 is the public IP of the tunnel on AWS side.
+A configuration file can be downloaded from the Site-to-Site VPN AWS Console. This file includes configuration details to be made on the client side (VPC-A) like Tunnel IP Addresses, Pre-shared keys, other configuration details.
+</code></pre></div>        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="configure-the-openswan-instance">Configure the OpenSwan Instance</h3>
+
+<ul>
+  <li>
+    <p>Install OpenSwan using the command yum install openswan -y.</p>
+  </li>
+  <li>Open /etc/sysctl.conf and ensure that its values match the following,
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>net.ipv4.ip_forward = 1
+net.ipv4.conf.default.rp_filter = 0
+net.ipv4.conf.default.accept_source_route = 0
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Apply these changes by executing the command <code class="highlighter-rouge">sysctl -p</code>.</p>
+  </li>
+  <li>
+    <p>Edit the file /etc/ipsec.conf and uncomment the last line include <code class="highlighter-rouge">/etc/ipsec.d/*.conf</code>.</p>
+  </li>
+  <li>Create a VPN configuration file: vi /etc/ipsec.d/{vpnname}.conf and add the tunnel details. An example of this in reference to the diagram above is provided below,
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>conn Tunnel1
+authby=secret
+auto=start
+left=%defaultroute
+leftid=13.237.83.228      --- Elastic IP of the OpenSwan Instance
+right=13.236.192.60       --- Public IP of the tunnel on AWS Side (VPC-B)
+type=tunnel
+ikelifetime=8h
+keylife=1h
+phase2alg=aes128-sha1;modp1024
+ike=aes128-sha1;modp1024
+keyingtries=%forever
+keyexchange=ike
+leftsubnet=192.168.99.0/24  --- CIDR Range of VPC-A
+rightsubnet=10.0.0.0/16     --- CIDR Range of VPC-B
+dpddelay=10
+dpdtimeout=30
+dpdaction=restart_by_peer
+</code></pre></div>    </div>
+  </li>
+  <li>Create a Secrets File: vi /etc/ipsec.d/{vpnname}.secrets and add the pre-shared key for authentication. 
+<code class="highlighter-rouge">13.237.83.228 13.236.192.60: PSK "K8WUTRNOVHiCnUae7rjNhMehNgRMjVXub"</code>
+An example of this in reference to the diagram above is provided below,</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The secrets file is in the format,
+{EIP} {Remote Public IP} : PSK “TheSecretPassphraseYouWantToUse”
+This information is available from the configuration file downloaded from AWS Console from VPC-B.
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>Start Openswan:- <code class="highlighter-rouge">service ipsec start</code>.</p>
+  </li>
+  <li>
+    <p>Set Openswan to start when the machine starts: <code class="highlighter-rouge">chkconfig ipsec on</code>.</p>
+  </li>
+  <li>
+    <p>The output of command <code class="highlighter-rouge">ipsec auto --status</code> is shown below which verifies that the IPSEC tunnel is up.</p>
+  </li>
+</ul>
+
+<p><img src="/img/tunnelup.png" alt="Markdown Monster icon" style="float: center; margin-right: 30px;" /></p>
+
+<ul>
+  <li>Some useful commands to debug IPSEC tunnels,
+    <ul>
+      <li><code class="highlighter-rouge">ipsec auto --up</code> Tunnel1 to quickly check the status of the tunnel.</li>
+      <li><code class="highlighter-rouge">service ipsec status</code> to get generic information about the tunnel. (i.e. if it’s running or not)</li>
+      <li><code class="highlighter-rouge">ipsec auto –status</code> - This will give detail on the negotiation of each tunnel. You will want to look for the connection name and the phrase “(ISAKMP SA established)”. This will let you know that the tunnel for that connection completed properly. If the tunnel fails to come up this command will also let you know what part of the negotiation failed.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="configure-aws-virtual-private-gateway-on-the-other-sideaws-account">Configure AWS Virtual Private Gateway on the other side(AWS Account)</h3>
+
+<h4 id="customer-gateway-cgw">Customer Gateway (CGW)</h4>
+
+<ul>
+  <li>
+    <p>Create a Customer Gateway using internet-routable IP address (static) of the customer gateway’s external interface. If the customer gateway is behind a network address translation (NAT) device that’s enabled for NAT traversal (NAT-T), use the public IP address of the NAT device. For this example, the customer gateway IP address is <code class="highlighter-rouge">13.237.83.228</code> which is the Elastic IP of OpenSwan Instance.</p>
+  </li>
+  <li>
+    <p>For type of routing, choose static. Usually, in production environments, it is dynamic with BGP.</p>
+  </li>
+  <li>
+    <p>For Dynamic routing only, choose Border Gateway Protocol (BGP) Autonomous System Number (ASN) of the customer gateway.</p>
+  </li>
+  <li>
+    <p>The screenshot below shows an example configuration of customer gateway in reference to the diagram above,</p>
+  </li>
+</ul>
+
+<p><img src="/img/cgw.png" alt="Markdown Monster icon" style="float: center; margin-right: 30px;" /></p>
+
+<h4 id="virtual-private-gateway-vgw">Virtual Private Gateway (VGW)</h4>
+
+<ul>
+  <li>
+    <p>A virtual private gateway is the VPN concentrator on the Amazon side of the Site-to-Site VPN connection. Create a virtual private gateway and attach it to the VPC ( For our example, it is connectivity-vpc) from which you want to create the Site-to-Site VPN connection.</p>
+  </li>
+  <li>
+    <p>When creating a virtual private gateway, you can specify the private Autonomous System Number (ASN) for the Amazon side of the gateway. If you don’t specify an ASN, the virtual private gateway is created with the default ASN (64512). You cannot change the ASN after you’ve created the virtual private gateway.</p>
+  </li>
+  <li>
+    <p>The screenshot below shows an example configuration of virtual private gateway in reference to the diagram above,</p>
+  </li>
+</ul>
+
+<p><img src="/img/vgw.png" alt="Markdown Monster icon" style="float: center; margin-right: 30px;" /></p>
+
+<h4 id="site-to-site-vpn-connection">Site-to-Site VPN Connection</h4>
+
+<ul>
+  <li>Using previously created CGW and VGW, populate creation of Site-to-Site VPN. Use static routing option for this example. The screenshot below shows an example configuration of Site-to-Site VPN in reference to the diagram above,</li>
+</ul>
+
+<p><img src="/img/vpnconfig.png" alt="Markdown Monster icon" style="float: center; margin-right: 10px;" /></p>
+
+<ul>
+  <li>Then on the Tunnel details page, the status of tunnels will be visible.</li>
+</ul>
+
+<p><img src="/img/tunup1.png" alt="Markdown Monster icon" style="float: center; margin-right: 30px;" /></p>
+
+<ul>
+  <li>The VPC route table to which the VGW is attached to needs to be updated. In the Route Propagation tab, edit and tick the box that says propagate route. Then, if we check the routes, we will see that the VPN traffic route will be propagated.</li>
+</ul>
+
+<p><img src="/img/rt.png" alt="Markdown Monster icon" style="float: center; margin-right: 30px;" /></p>
+
+<h4 id="verifying-the-connection">Verifying the connection</h4>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">VPC-B</code> has flow logs enabled. We can try using tcptraceroute, tcpdump and VPC Flow Logs to verify connectivity between <code class="highlighter-rouge">VPC-A</code> and <code class="highlighter-rouge">VPC-B</code>. Two instances deployed in different AZ’s and subnets with private IP addresses allocated to them are used to verify this connectivity.</p>
+  </li>
+  <li>
+    <p>Using tcptraceroute and tcpdump,</p>
+  </li>
+</ul>
+
+<p><img src="/img/vfy1.png" alt="Markdown Monster icon" style="float: center; margin-right: 10px;" /></p>
+
+<p><img src="/img/vfy2.png" alt="Markdown Monster icon" style="float: center; margin-right: 30px;" /></p>
+
+<ul>
+  <li>
+    <p>The commands used to get this output are <code class="highlighter-rouge">tcpdump -s 0 -i eth0 -w testcap.pcap</code> and <code class="highlighter-rouge">tshark -r testcap.pcap | grep http</code>.</p>
+  </li>
+  <li>
+    <p>VPC Flow Logs, in the format,
+<code class="highlighter-rouge">&lt;version&gt; &lt;account-id&gt; &lt;interface-id&gt; &lt;srcaddr&gt; &lt;dstaddr&gt; &lt;srcport&gt; &lt;dstport&gt; &lt;protocol&gt; &lt;packets&gt; &lt;bytes&gt; &lt;start&gt; &lt;end&gt; &lt;action&gt; &lt;log-status&gt;</code></p>
+  </li>
+</ul>
+
+<p><img src="/img/flowlogs.png" alt="Markdown Monster icon" style="float: center; margin-right: 30px;" /></p>
+
+<ul>
+  <li>
+    <p>Related Articles can be found here,</p>
+
+    <ul>
+      <li>
+        <p><a href="https://docs.aws.amazon.com/vpn/latest/s2svpn/VPC_VPN.html">AWS-VPN-DOCS</a></p>
+      </li>
+      <li>
+        <p><a href="https://docs.aws.amazon.com/vpn/latest/s2svpn/Examples.html">AWS-VPN-EXAMPLES</a></p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+      </article>
+
+      
+        <div class="blog-tags">
+          Tags:
+          
+          
+            <a href="/tags#AWS">AWS</a>
+          
+            <a href="/tags#EC2">EC2</a>
+          
+            <a href="/tags#VPC">VPC</a>
+          
+            <a href="/tags#VPN">VPN</a>
+          
+            <a href="/tags#Virtual Private Gateway">Virtual Private Gateway</a>
+          
+            <a href="/tags#Customer Gateway">Customer Gateway</a>
+          
+            <a href="/tags#IPSEC VPN">IPSEC VPN</a>
+          
+            <a href="/tags#CLOUD">CLOUD</a>
+          
+          
+        </div>
+      
+
+      
+        <!-- Check if any share-links are active -->
+
+
+
+
+<section id = "social-share-section">
+  <span class="sr-only">Share: </span>
+
+  
+  <!--- Share on Twitter -->
+    <a href="https://twitter.com/intent/tweet?text=Site-to-Site+VPN+using+OpenSwan+EC2+Instance+and+Virtual+Private+Gateway+https://blog.avitechnos.com/2019-07-08-Site-to-Site-VPN/"
+      class="btn btn-social-icon btn-twitter" title="Share on Twitter">
+      <span class="fa fa-fw fa-twitter" aria-hidden="true"></span>
+      <span class="sr-only">Twitter</span>
+    </a>
+  
+
+  
+  <!--- Share on Facebook -->
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https://blog.avitechnos.com/2019-07-08-Site-to-Site-VPN/"
+      class="btn btn-social-icon btn-facebook" title="Share on Facebook">
+      <span class="fa fa-fw fa-facebook" aria-hidden="true"></span>
+      <span class="sr-only">Facebook</span>
+    </a>
+  
+
+  
+
+  
+  <!--- Share on LinkedIn -->
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://blog.avitechnos.com/2019-07-08-Site-to-Site-VPN/"
+      class="btn btn-social-icon btn-linkedin" title="Share on LinkedIn">
+      <span class="fa fa-fw fa-linkedin" aria-hidden="true"></span>
+      <span class="sr-only">LinkedIn</span>
+    </a>
+  
+
+</section>
+
+
+
+      
+
+      <ul class="pager blog-pager">
+        
+        <li class="previous">
+          <a href="/2019-06-05-Encrypting-Sessions-Systems-Manager/" data-toggle="tooltip" data-placement="top" title="Encrypting Systems Manager Sessions">&larr; Previous Post</a>
+        </li>
+        
+        
+      </ul>
+
+      
+        <div class="disqus-comments">
+          
+        </div>
+          
+        <div class="staticman-comments">
+          
+  <div class="page__comments">
+    <!-- Start static comments -->
+    <div class="js-comments">
+      
+    </div>
+    <!-- End static comments -->
+    <!-- Start new comment form -->
+    <div class="page__comments-form">
+      <h3 class="page__comments-title">Leave a Comment</h3>
+      <p class="small">Your email address will not be published. Required fields are marked <span class="required">*</span></p>
+      <form id="new_comment" class="page__comments-form js-form form" method="post" action="https://staticman3.herokuapp.com/v3/entry/github/prasiddha01/xplorer-io/xplorer.github.io/master/comments">
+        <div class="form-group">
+          <label for="comment-form-message">Comment <small class="required">*</small></label><br>
+          <textarea type="text" rows="12" cols="36" id="comment-form-message" name="fields[message]" tabindex="1"></textarea>
+          <div class="small help-block"><a href="https://daringfireball.net/projects/markdown/">Markdown is supported.</a></div>
+        </div>
+        <div class="form-group">
+          <label for="comment-form-name">Name <small class="required">*</small></label>
+          <input type="text" id="comment-form-name" name="fields[name]" tabindex="2" />
+        </div>
+        <div class="form-group">
+          <label for="comment-form-email">Email address <small class="required">*</small></label>
+          <input type="email" id="comment-form-email" name="fields[email]" tabindex="3" />
+        </div>
+        <div class="form-group">
+          <label for="comment-form-url">Website (optional)</label>
+          <input type="url" id="comment-form-url" name="fields[url]" tabindex="4"/>
+        </div>
+        <div class="form-group hidden" style="display: none;">
+          <input type="hidden" name="options[origin]" value="https://blog.avitechnos.com/2019-07-08-Site-to-Site-VPN/">
+          <input type="hidden" name="options[slug]" value="Site-to-Site-VPN">
+          <label for="comment-form-location">Not used. Leave blank if you are a human.</label>
+          <input type="text" id="comment-form-location" name="fields[hidden]" autocomplete="off"/>
+          <input type="hidden" name="options[reCaptcha][siteKey]" value="6LcUBZYUAAAAABlkyzrf7TnB3Eahl36OX1DhbJ0J">
+          <input type="hidden" name="options[reCaptcha][secret]" value="G02R+RR0hNDii83KUW6yNGnbpLbDpGHSDjpKNAPvKaEYS2FW4/MCj5CoSEe7MFBmkXFMrLw69AiomIQH9rvvJY1fpaMXt4ZjHM6Ucu1a5uy3o5K1gjxZ6KYsNhN3GKRSJw9/9PnPrbxdmy5C1NjDWkFN7mipIIU76LaxezK3HDD7T8DQIW4w28fOc+KZ3NiUWuv+E4GKzjDxe+1ktqtC3SsjvYgzNohRVY0WhPfqIHJXWrVEbr7XYR6m2PfW4X+2FEyhIFbMxGVsRcR90Gpr5myiLl+Sukkr8MBLqBhr/2Y20OSa7/TdEBueXHTYEWvsUE92X58aN1LFm38kK2p3DA==">
+        </div>
+        <!-- Start comment form alert messaging -->
+        <p class="hidden js-notice">
+          <strong class="js-notice-text"></strong>
+        </p>
+        <!-- End comment form alert messaging -->
+        
+          <div class="form-group">
+            <div class="g-recaptcha" data-sitekey="6LcUBZYUAAAAABlkyzrf7TnB3Eahl36OX1DhbJ0J"></div>
+            <script src='https://www.google.com/recaptcha/api.js'></script>
+          </div>
+        
+        <div class="form-group">
+          <button type="submit" id="comment-form-submit" tabindex="5" class="btn btn--primary btn--large">Submit Comment</button>
+        </div>
+      </form>
+    </div>
+    <!-- End new comment form -->
+    <!-- Load reCaptcha if site key is set -->
+    
+      <script async src="https://www.google.com/recaptcha/api.js"></script>
+    
+  </div>
+  <!-- Load script to handle comment form submission -->
+  
+  <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+  <script>
+    if (typeof jQuery == 'undefined') {
+      document.write('<script src="/js/jquery-1.11.2.min.js"></scr' + 'ipt>');
+    }
+  </script>
+  <script>
+    (function ($) {
+    var $comments = $('.js-comments');
+
+    $('#new_comment').submit(function () {
+      var form = this;
+
+      $(form).addClass('disabled');
+
+      $.ajax({
+        type: $(this).attr('method'),
+        url: $(this).attr('action'),
+        data: $(this).serialize(),
+        contentType: 'application/x-www-form-urlencoded',
+        success: function (data) {
+          $('#comment-form-submit').html('Submitted');
+          $('.page__comments-form .js-notice').removeClass('notice--danger');
+          $('.page__comments-form .js-notice').addClass('notice--success');
+          showAlert('Thanks for your comment! It will show on the site once it has been approved.');
+        },
+        error: function (err) {
+          console.log(err);
+          $('#comment-form-submit').html('Submit Comment');
+          $('.page__comments-form .js-notice').removeClass('notice--success');
+          $('.page__comments-form .js-notice').addClass('notice--danger');
+          showAlert('Sorry, there was an error with your submission. Please make sure all required fields have been completed and try again.');
+          $(form).removeClass('disabled');
+        }
+      });
+
+      return false;
+    });
+
+    function showAlert(message) {
+      $('.page__comments-form .js-notice').removeClass('hidden');
+      $('.page__comments-form .js-notice-text').html(message);
+    }
+  })(jQuery);
+  </script>
+
+
+
+
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+
+    <footer>
+  <div class="container beautiful-jekyll-footer">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links"><li><a href="/feed.xml" title="RSS"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">RSS</span>
+              </a>
+            </li><li><a href="mailto:prasiddhabista102@gmail.com" title="Email me"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">Email me</span>
+              </a>
+            </li><li><a href="https://github.com/Prasiddha01" title="GitHub"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">GitHub</span>
+              </a>
+            </li><li><a href="https://linkedin.com/in/https://www.linkedin.com/in/prasiddha01/" title="LinkedIn"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">LinkedIn</span>
+              </a>
+            </li></ul>
+      <p class="copyright text-muted">
+      Prasiddha Bista
+      &nbsp;&bull;&nbsp;
+      2019
+
+      
+      &nbsp;&bull;&nbsp;
+      <a href="https://blog.avitechnos.com">blog.avitechnos.com</a>
+      
+
+      
+      </p>
+          <!-- Please don't remove this, keep my open source work credited :) -->
+    <p class="theme-by text-muted">
+      Theme by
+      <a href="https://deanattali.com/beautiful-jekyll/">beautiful-jekyll</a>
+    </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+    
+
+
+
+
+
+
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+      <script>
+      	if (typeof jQuery == 'undefined') {
+      	  document.write('<script src="/js/jquery-1.11.2.min.js"></scr' + 'ipt>');
+      	}
+      </script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+	<script src="/js/bootstrap.min.js"></script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+	<script src="/js/main.js"></script>
+    
+  
+
+
+  
+  </body>
+</html>

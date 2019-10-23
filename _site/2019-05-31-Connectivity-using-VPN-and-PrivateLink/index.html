@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Beautiful Jekyll | MIT license | Copyright Dean Attali 2016 -->
+  <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-143824726-1"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-143824726-1');
+  </script>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+
+  <title>Networking Architecture - Hybrid</title>
+
+  <meta name="author" content="Prasiddha Bista" />
+
+  
+
+  <link rel="alternate" type="application/rss+xml" title="A Blog for X-plorer's - Sharing ideas and creativity!" href="/feed.xml" />
+
+  
+
+  
+
+  
+
+
+  
+    
+      
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css" />
+
+
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    
+      <link rel="stylesheet" href="/css/bootstrap-social.css" />
+    
+      <link rel="stylesheet" href="/css/main.css" />
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+    
+  
+
+  
+
+  
+
+  
+
+    <!-- Facebook OpenGraph tags -->
+  
+
+  
+  <meta property="og:title" content="Networking Architecture - Hybrid" />
+  
+
+   
+  <meta property="og:description" content="Yet another interesting architecture including AWS services like AWS Site-to-Site VPN, PrivateLink and Transit Gateway. This solution enables connectivity between a Corporate Data Center and workloads deployed in AWS Environment. Let’s say we want customer support personnel to connect to their hybrid deployed workloads in AWS from the data center...">
+  
+
+
+  <meta property="og:type" content="website" />
+
+  
+  <meta property="og:url" content="https://blog.avitechnos.com/2019-05-31-Connectivity-using-VPN-and-PrivateLink/" />
+  <link rel="canonical" href="https://blog.avitechnos.com/2019-05-31-Connectivity-using-VPN-and-PrivateLink/" />
+  
+
+  
+  <meta property="og:image" content="https://blog.avitechnos.com/img/passport.jpg" />
+  
+
+
+  <!-- Twitter summary cards -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@" />
+  <meta name="twitter:creator" content="@" />
+
+  
+  <meta name="twitter:title" content="Networking Architecture - Hybrid" />
+  
+
+  
+  <meta name="twitter:description" content="Yet another interesting architecture including AWS services like AWS Site-to-Site VPN, PrivateLink and Transit Gateway. This solution enables connectivity between a Corporate Data Center and workloads deployed in AWS Environment. Let’s say we want customer support personnel to connect to their hybrid deployed workloads in AWS from the data center...">
+  
+
+  
+  <meta name="twitter:image" content="https://blog.avitechnos.com/img/passport.jpg" />
+  
+
+  
+
+  
+  <!-- Staticman -->
+  <link rel="stylesheet" href="/css/staticman.css" />
+  
+
+</head>
+
+
+  <body>
+
+    
+
+  
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+        <a class="navbar-brand" href="https://blog.avitechnos.com">A Blog for X-plorer's</a>
+      
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+          <li>
+            
+
+
+
+
+
+
+<a href="/aboutme">About Me</a>
+
+          </li>
+        
+        
+        
+          <li class="navlinks-container">
+            <a class="navlinks-parent" href="javascript:void(0)">Resources</a>
+            <div class="navlinks-children">
+              
+                
+                  
+
+
+
+
+
+
+<a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+
+                
+              
+                
+                  
+
+
+
+
+
+
+<a href="http://www.markdowntutorial.com/">Learn markdown</a>
+
+                
+              
+                
+                  
+
+
+
+
+
+
+<a href="https://pages.github.com/">GitHub Pages</a>
+
+                
+              
+            </div>
+          </li>
+        
+        
+      </ul>
+    </div>
+
+	
+	<div class="avatar-container">
+	  <div class="avatar-img-border">
+	    <a href="https://blog.avitechnos.com">
+	      <img class="avatar-img" src="/img/passport.jpg" />
+		</a>
+	  </div>
+	</div>
+	
+
+  </div>
+</nav>
+
+
+    <!-- TODO this file has become a mess, refactor it -->
+
+
+
+
+
+<header class="header-section ">
+
+<div class="intro-header no-img">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <h1>Networking Architecture - Hybrid</h1>
+		  
+		  
+		  
+		  <span class="post-meta">Posted on May 31, 2019</span>
+		  
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
+      
+
+      <article role="main" class="blog-post">
+        <p>Yet another interesting architecture including AWS services like AWS Site-to-Site VPN, PrivateLink and Transit Gateway. This solution enables connectivity between a Corporate Data Center and workloads deployed in AWS Environment.</p>
+
+<p>Let’s say we want customer support personnel to connect to their hybrid deployed workloads in AWS from the data center and be able to query, make changes, generate logs, create backups and so on; basically manage the workloads in accordance to business needs. The diagram below provides more insight on this,</p>
+
+<p><img src="/img/blog.png" alt="Markdown Monster icon" style="float: left; margin-right: 10px;" /></p>
+
+<p>This scenario can be detailed in the following steps,</p>
+
+<ul>
+  <li>Support personnel will use Site-to-Site VPNs to connect from their data center to the connectivity account which will terminate at the Virtual Private Gateway(VGW) at the AWS side.</li>
+  <li>Transit Gateway will have the VPN or VPC attached to it, hence will pick up the connection terminated at the VGW and forward it to the endpoint(AWS PrivateLink).</li>
+  <li>An NLB(network load balancer) listening on pre-defined port will pick up the connection on the account where the workloads are.</li>
+</ul>
+
+<h3 id="creation-of-site-to-site-vpn-the-following-steps">Creation of Site-to-Site VPN the following steps,</h3>
+
+<p>Customers leverage AWS site-to-site VPN to connect their network to their PCPT AWS Connectivity Account. It comprises of the following components;</p>
+
+<ul>
+  <li>A customer gateway which is a physical device or software application on customer’s side of the Site-to-Site VPN connection.</li>
+  <li>A virtual private gateway which is the VPN concentrator on the Amazon side of the Site-to-Site VPN connection. You create a virtual private gateway and attach it to the VPC from which you want to create the Site-to-Site VPN connection.</li>
+  <li>The target gateway of AWS Site-to-Site VPN connection from a virtual private gateway to a transit gateway. A transit gateway is a transit hub that you can use to interconnect your virtual private clouds (VPC) and on-premises networks.</li>
+</ul>
+
+<h3 id="creation-of-transit-gateway-involves-the-following-steps">Creation of Transit Gateway involves the following steps,</h3>
+
+<ul>
+  <li>Creating the Transit Gateway</li>
+  <li>Attaching Your VPCs to Your Transit Gateways</li>
+  <li>Adding Routes between the Transit Gateway and your VPCs</li>
+  <li>Security groups attached to Transit Gateway must allow ingress and egress traffic on the ports defined.</li>
+</ul>
+
+<h3 id="creation-of-privatelink-involves-the-following-steps">Creation of PrivateLink involves the following steps,</h3>
+
+<ul>
+  <li>The generation of a DNS hostname, the use of private IP address, the deployment of the endpoint, and its configuration.</li>
+  <li>An endpoint service is created on the Service Provider side which requires an NLB with listeners and target groups configured with right protocol and ports.</li>
+  <li>We can specify multiple subnets in different availability zones for high availability and fault tolerance.</li>
+  <li>The CIDR Range of the VPC must be allowed in the security group of the target instances for NLB to communicate and perform health checks.</li>
+  <li>An interface endpoint is created on the Service Consumer Side where we lookup for the Service Endpoint using “Service Name” ( Note that the consumer account must be whitelisted in the Service Provider side for Consumer account to find the service and verify it).</li>
+  <li>After verifying, the endpoint populates ENI’s with private IP addresses in the subnets we specify. 
+We can specify multiple subnets in different availability zones for high availability and fault tolerance.</li>
+  <li>The IP address of the instances must be allowed in the security group of the ENI’s to allow communication between them.</li>
+  <li>The Service Provider account must accept the connection.</li>
+  <li>After the consumer creates interface endpoint, the service provider can accept or deny the connection.</li>
+  <li>When an interface endpoint is created, endpoint-specific Domain Name System (DNS) hostnames are generated that can be used to communicate with the service. (For example, vpce-037de48c63vc16c51-4ddrcns3.vpce-svc-ossdec22b247840922.ap-southeast-2.vpce.amazonaws.com).</li>
+</ul>
+
+<h3 id="limitations">Limitations</h3>
+
+<ul>
+  <li>Only TCP traffic is supported for the PrivateLink service.</li>
+  <li>Customer needs to define a safe CIDR for the Connectivity Account that is hosting the Production and Non-Production VPCs</li>
+  <li>Cross-TGW Security Group Referencing is not supported at launch. Spoke Amazon VPCs cannot reference security groups in other spokes connected to the same AWS Transit Gateway.</li>
+  <li>Maximum bandwidth per connection in the transit mesh is limited to 1.25gps.</li>
+  <li>Network Load Balancers(NLB) do not have a security group attached to them. The problem with this is that we have to allow the whole CIDR Range (like 10.0.0.0/16) in the security group of the services ( like EC2 instances) in the Service Provider Account to allow NLB’s Target Group to check for health in assigned ports and protocols. On the other hand, in the Service Consumer Account, the Elastic Network Interfaces assigned to each of the subnets we specify have a security group which needs to allow ports and protocols from the services or instances initiating the connection. We can be more specific with this security group by allowing only the instances to communicate with the ENI which then forwards the requests to the NLB and the destination service.</li>
+</ul>
+
+<h3 id="note">Note</h3>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- VPC Peering and Transit Gateway cannot be used with overlapping CIDR Ranges; hence PrivateLink is used in this scenario.
+- Also, PrivateLink is uni-directional, so in this scenario, if we need traffic initiated from workloads in AWS environment to reach back to customer's data center, we need a second PrivateLink deployed between Connectivity Account and Customer Deployed Environments(workloads).
+</code></pre></div></div>
+
+      </article>
+
+      
+        <div class="blog-tags">
+          Tags:
+          
+          
+            <a href="/tags#AWS">AWS</a>
+          
+            <a href="/tags#EC2">EC2</a>
+          
+            <a href="/tags#VPC">VPC</a>
+          
+            <a href="/tags#VPN">VPN</a>
+          
+            <a href="/tags#AWS PrivateLink">AWS PrivateLink</a>
+          
+            <a href="/tags#Transit Gateway">Transit Gateway</a>
+          
+            <a href="/tags#Interface Endpoint">Interface Endpoint</a>
+          
+            <a href="/tags#Endpoint Services">Endpoint Services</a>
+          
+            <a href="/tags#CLOUD">CLOUD</a>
+          
+          
+        </div>
+      
+
+      
+        <!-- Check if any share-links are active -->
+
+
+
+
+<section id = "social-share-section">
+  <span class="sr-only">Share: </span>
+
+  
+  <!--- Share on Twitter -->
+    <a href="https://twitter.com/intent/tweet?text=Networking+Architecture+-+Hybrid+https://blog.avitechnos.com/2019-05-31-Connectivity-using-VPN-and-PrivateLink/"
+      class="btn btn-social-icon btn-twitter" title="Share on Twitter">
+      <span class="fa fa-fw fa-twitter" aria-hidden="true"></span>
+      <span class="sr-only">Twitter</span>
+    </a>
+  
+
+  
+  <!--- Share on Facebook -->
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https://blog.avitechnos.com/2019-05-31-Connectivity-using-VPN-and-PrivateLink/"
+      class="btn btn-social-icon btn-facebook" title="Share on Facebook">
+      <span class="fa fa-fw fa-facebook" aria-hidden="true"></span>
+      <span class="sr-only">Facebook</span>
+    </a>
+  
+
+  
+
+  
+  <!--- Share on LinkedIn -->
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://blog.avitechnos.com/2019-05-31-Connectivity-using-VPN-and-PrivateLink/"
+      class="btn btn-social-icon btn-linkedin" title="Share on LinkedIn">
+      <span class="fa fa-fw fa-linkedin" aria-hidden="true"></span>
+      <span class="sr-only">LinkedIn</span>
+    </a>
+  
+
+</section>
+
+
+
+      
+
+      <ul class="pager blog-pager">
+        
+        <li class="previous">
+          <a href="/2019-03-16-EC2-Instance-Scheduler-2/" data-toggle="tooltip" data-placement="top" title="EC2-Instance-Scheduler-part-2">&larr; Previous Post</a>
+        </li>
+        
+        
+        <li class="next">
+          <a href="/2019-06-05-Encrypting-Sessions-Systems-Manager/" data-toggle="tooltip" data-placement="top" title="Encrypting Systems Manager Sessions">Next Post &rarr;</a>
+        </li>
+        
+      </ul>
+
+      
+        <div class="disqus-comments">
+          
+        </div>
+          
+        <div class="staticman-comments">
+          
+  <div class="page__comments">
+    <!-- Start static comments -->
+    <div class="js-comments">
+      
+    </div>
+    <!-- End static comments -->
+    <!-- Start new comment form -->
+    <div class="page__comments-form">
+      <h3 class="page__comments-title">Leave a Comment</h3>
+      <p class="small">Your email address will not be published. Required fields are marked <span class="required">*</span></p>
+      <form id="new_comment" class="page__comments-form js-form form" method="post" action="https://staticman3.herokuapp.com/v3/entry/github/prasiddha01/xplorer-io/xplorer.github.io/master/comments">
+        <div class="form-group">
+          <label for="comment-form-message">Comment <small class="required">*</small></label><br>
+          <textarea type="text" rows="12" cols="36" id="comment-form-message" name="fields[message]" tabindex="1"></textarea>
+          <div class="small help-block"><a href="https://daringfireball.net/projects/markdown/">Markdown is supported.</a></div>
+        </div>
+        <div class="form-group">
+          <label for="comment-form-name">Name <small class="required">*</small></label>
+          <input type="text" id="comment-form-name" name="fields[name]" tabindex="2" />
+        </div>
+        <div class="form-group">
+          <label for="comment-form-email">Email address <small class="required">*</small></label>
+          <input type="email" id="comment-form-email" name="fields[email]" tabindex="3" />
+        </div>
+        <div class="form-group">
+          <label for="comment-form-url">Website (optional)</label>
+          <input type="url" id="comment-form-url" name="fields[url]" tabindex="4"/>
+        </div>
+        <div class="form-group hidden" style="display: none;">
+          <input type="hidden" name="options[origin]" value="https://blog.avitechnos.com/2019-05-31-Connectivity-using-VPN-and-PrivateLink/">
+          <input type="hidden" name="options[slug]" value="Connectivity-using-VPN-and-PrivateLink">
+          <label for="comment-form-location">Not used. Leave blank if you are a human.</label>
+          <input type="text" id="comment-form-location" name="fields[hidden]" autocomplete="off"/>
+          <input type="hidden" name="options[reCaptcha][siteKey]" value="6LcUBZYUAAAAABlkyzrf7TnB3Eahl36OX1DhbJ0J">
+          <input type="hidden" name="options[reCaptcha][secret]" value="G02R+RR0hNDii83KUW6yNGnbpLbDpGHSDjpKNAPvKaEYS2FW4/MCj5CoSEe7MFBmkXFMrLw69AiomIQH9rvvJY1fpaMXt4ZjHM6Ucu1a5uy3o5K1gjxZ6KYsNhN3GKRSJw9/9PnPrbxdmy5C1NjDWkFN7mipIIU76LaxezK3HDD7T8DQIW4w28fOc+KZ3NiUWuv+E4GKzjDxe+1ktqtC3SsjvYgzNohRVY0WhPfqIHJXWrVEbr7XYR6m2PfW4X+2FEyhIFbMxGVsRcR90Gpr5myiLl+Sukkr8MBLqBhr/2Y20OSa7/TdEBueXHTYEWvsUE92X58aN1LFm38kK2p3DA==">
+        </div>
+        <!-- Start comment form alert messaging -->
+        <p class="hidden js-notice">
+          <strong class="js-notice-text"></strong>
+        </p>
+        <!-- End comment form alert messaging -->
+        
+          <div class="form-group">
+            <div class="g-recaptcha" data-sitekey="6LcUBZYUAAAAABlkyzrf7TnB3Eahl36OX1DhbJ0J"></div>
+            <script src='https://www.google.com/recaptcha/api.js'></script>
+          </div>
+        
+        <div class="form-group">
+          <button type="submit" id="comment-form-submit" tabindex="5" class="btn btn--primary btn--large">Submit Comment</button>
+        </div>
+      </form>
+    </div>
+    <!-- End new comment form -->
+    <!-- Load reCaptcha if site key is set -->
+    
+      <script async src="https://www.google.com/recaptcha/api.js"></script>
+    
+  </div>
+  <!-- Load script to handle comment form submission -->
+  
+  <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+  <script>
+    if (typeof jQuery == 'undefined') {
+      document.write('<script src="/js/jquery-1.11.2.min.js"></scr' + 'ipt>');
+    }
+  </script>
+  <script>
+    (function ($) {
+    var $comments = $('.js-comments');
+
+    $('#new_comment').submit(function () {
+      var form = this;
+
+      $(form).addClass('disabled');
+
+      $.ajax({
+        type: $(this).attr('method'),
+        url: $(this).attr('action'),
+        data: $(this).serialize(),
+        contentType: 'application/x-www-form-urlencoded',
+        success: function (data) {
+          $('#comment-form-submit').html('Submitted');
+          $('.page__comments-form .js-notice').removeClass('notice--danger');
+          $('.page__comments-form .js-notice').addClass('notice--success');
+          showAlert('Thanks for your comment! It will show on the site once it has been approved.');
+        },
+        error: function (err) {
+          console.log(err);
+          $('#comment-form-submit').html('Submit Comment');
+          $('.page__comments-form .js-notice').removeClass('notice--success');
+          $('.page__comments-form .js-notice').addClass('notice--danger');
+          showAlert('Sorry, there was an error with your submission. Please make sure all required fields have been completed and try again.');
+          $(form).removeClass('disabled');
+        }
+      });
+
+      return false;
+    });
+
+    function showAlert(message) {
+      $('.page__comments-form .js-notice').removeClass('hidden');
+      $('.page__comments-form .js-notice-text').html(message);
+    }
+  })(jQuery);
+  </script>
+
+
+
+
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+
+    <footer>
+  <div class="container beautiful-jekyll-footer">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links"><li><a href="/feed.xml" title="RSS"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">RSS</span>
+              </a>
+            </li><li><a href="mailto:prasiddhabista102@gmail.com" title="Email me"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">Email me</span>
+              </a>
+            </li><li><a href="https://github.com/Prasiddha01" title="GitHub"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">GitHub</span>
+              </a>
+            </li><li><a href="https://linkedin.com/in/https://www.linkedin.com/in/prasiddha01/" title="LinkedIn"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">LinkedIn</span>
+              </a>
+            </li></ul>
+      <p class="copyright text-muted">
+      Prasiddha Bista
+      &nbsp;&bull;&nbsp;
+      2019
+
+      
+      &nbsp;&bull;&nbsp;
+      <a href="https://blog.avitechnos.com">blog.avitechnos.com</a>
+      
+
+      
+      </p>
+          <!-- Please don't remove this, keep my open source work credited :) -->
+    <p class="theme-by text-muted">
+      Theme by
+      <a href="https://deanattali.com/beautiful-jekyll/">beautiful-jekyll</a>
+    </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+    
+
+
+
+
+
+
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+      <script>
+      	if (typeof jQuery == 'undefined') {
+      	  document.write('<script src="/js/jquery-1.11.2.min.js"></scr' + 'ipt>');
+      	}
+      </script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+	<script src="/js/bootstrap.min.js"></script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+	<script src="/js/main.js"></script>
+    
+  
+
+
+  
+  </body>
+</html>
