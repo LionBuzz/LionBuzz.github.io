@@ -15,7 +15,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 
-  <title>EC2-Instance-Scheduler-part-2</title>
+  <title>First year at Versent!!!</title>
 
   <meta name="author" content="Prasiddha Bista" />
 
@@ -67,19 +67,19 @@
   
 
   
-  <meta property="og:title" content="EC2-Instance-Scheduler-part-2" />
+  <meta property="og:title" content="First year at Versent!!!" />
   
 
    
-  <meta property="og:description" content="This is the second part of Instance Scheduler where I am going to explain how a lambda function which when invoked by cloudwatch rule, triggers a SNS notification which sends me an email. Everytime, the specified instance changes state (start,stop,pending), cloudwatch rule triggers the lambda function which then sends sns...">
+  <meta property="og:description" content="Celebrating one year at Versent !!! :) What an amazing time to be alive! Time really flies! A year ago, working in Hospitality at the airport, studying Networking at TAFE, I was constantly thinking about my career, what my future would look like in a few years to come. The...">
   
 
 
   <meta property="og:type" content="website" />
 
   
-  <meta property="og:url" content="https://blog.avitechnos.com/2019-03-16-EC2-Instance-Scheduler-2/" />
-  <link rel="canonical" href="https://blog.avitechnos.com/2019-03-16-EC2-Instance-Scheduler-2/" />
+  <meta property="og:url" content="https://blog.avitechnos.com/2019-08-02-First-Year-At-Versent/" />
+  <link rel="canonical" href="https://blog.avitechnos.com/2019-08-02-First-Year-At-Versent/" />
   
 
   
@@ -93,11 +93,11 @@
   <meta name="twitter:creator" content="@" />
 
   
-  <meta name="twitter:title" content="EC2-Instance-Scheduler-part-2" />
+  <meta name="twitter:title" content="First year at Versent!!!" />
   
 
   
-  <meta name="twitter:description" content="This is the second part of Instance Scheduler where I am going to explain how a lambda function which when invoked by cloudwatch rule, triggers a SNS notification which sends me an email. Everytime, the specified instance changes state (start,stop,pending), cloudwatch rule triggers the lambda function which then sends sns...">
+  <meta name="twitter:description" content="Celebrating one year at Versent !!! :) What an amazing time to be alive! Time really flies! A year ago, working in Hospitality at the airport, studying Networking at TAFE, I was constantly thinking about my career, what my future would look like in a few years to come. The...">
   
 
   
@@ -225,11 +225,11 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         <div class="post-heading">
-          <h1>EC2-Instance-Scheduler-part-2</h1>
+          <h1>First year at Versent!!!</h1>
 		  
 		  
 		  
-		  <span class="post-meta">Posted on March 16, 2019</span>
+		  <span class="post-meta">Posted on August 2, 2019</span>
 		  
         </div>
       </div>
@@ -249,57 +249,17 @@
       
 
       <article role="main" class="blog-post">
-        <p>This is the second part of Instance Scheduler where I am going to explain how a lambda function which when invoked by cloudwatch rule, triggers a SNS notification which sends me an email.
-Everytime, the specified instance changes state (start,stop,pending), cloudwatch rule triggers the lambda function which then sends sns notification via email to me.</p>
+        <p>Celebrating one year at Versent !!! :)</p>
 
-<p>Let’s see what the cloudwatch rule looks like,
-<img src="/img/cw.png" alt="Markdown Monster icon" style="float: left; margin-right: 10px;" /></p>
+<p>What an amazing time to be alive! Time really flies! A year ago, working in Hospitality at the airport, studying Networking at TAFE, I was constantly thinking about my career, what my future would look like in a few years to come.</p>
 
-<p>Here is  my lambda function,</p>
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">boto3</span>
-<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Process</span>
-<span class="n">ec2_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s">'ec2'</span><span class="p">)</span>
-<span class="n">ec2_resource</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s">'ec2'</span><span class="p">)</span>
-<span class="n">state</span> <span class="o">=</span> <span class="n">ec2_resource</span><span class="o">.</span><span class="n">Instance</span><span class="p">(</span><span class="s">'id'</span><span class="p">)</span>
-<span class="n">paginator</span> <span class="o">=</span> <span class="n">ec2_client</span><span class="o">.</span><span class="n">get_paginator</span><span class="p">(</span><span class="s">'describe_instances'</span><span class="p">)</span>
+<p>The real story starts when our very own CTO James Coxon (The handsome guy in the picture below) was travelling back and forth from Sydney every second week or so. I did not know what he did, nor he knew that I was studying IT. After numerous encounters and conversations, after months of knowing him as our guest, I saw him working on his MacBook (lots of AWS stickers on the back) and decided to ask him if he could give me some advice on the future of IT and what I could do to ensure I take the right steps into the industry. Next week, I got a call for an interview at Versent which I recall as one of the most happiest days of my life. After I was hired, I asked him, “Why me?” He replied, “It’s your attitude, one can teach technical skills to people but never attitude”.</p>
 
-<span class="k">def</span> <span class="nf">get_inst</span><span class="p">():</span>
-    <span class="n">pages</span> <span class="o">=</span> <span class="n">paginator</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span>
-         <span class="n">Filters</span><span class="o">=</span><span class="p">[</span>
-            <span class="p">{</span>
-               <span class="s">'Name'</span><span class="p">:</span> <span class="s">'tag-key'</span><span class="p">,</span>
-                <span class="s">'Values'</span><span class="p">:</span> <span class="p">[</span>
-                    <span class="s">'ppc-scheduler'</span><span class="p">,</span>
-                <span class="p">]</span>
-            <span class="p">},</span>
-        <span class="p">],</span>
-    <span class="p">)</span>
-    <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="n">pages</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">page</span>
-        
+<p>Versent is a company built on the foundation of culture and family, people here are valued more than work. I am blessed to have got an opportunity to work here, my first year has been amazing and this is just the beginning of endless opportunities that Versent has to offer. If you come to work everyday as a happy person and leave after learning so much everyday, you know you are in the right place at the right time! Thank you Versent and family for an amazing opportunity!</p>
 
-<span class="k">def</span> <span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
-    <span class="n">instances</span> <span class="o">=</span> <span class="n">get_inst</span><span class="p">()</span> <span class="c"># gets the instances with specified tag</span>
-        
-    <span class="n">instance_ids</span> <span class="o">=</span> <span class="p">[]</span>
-    
-    <span class="k">for</span> <span class="n">reservation</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">[</span><span class="s">'Reservations'</span><span class="p">]:</span>
-        <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">reservation</span><span class="p">[</span><span class="s">'Instances'</span><span class="p">]:</span>
-            <span class="n">instance_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instance</span><span class="p">[</span><span class="s">'InstanceId'</span><span class="p">])</span>
-            
-    <span class="n">MY_SNS_TOPIC_ARN</span> <span class="o">=</span> <span class="s">'arn:aws:sns:ap-southeast-2:2222222222:pras-test'</span>
-    <span class="n">sns_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s">'sns'</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">instance_id</span> <span class="ow">in</span> <span class="n">instance_ids</span><span class="p">:</span>
-        <span class="n">sns_client</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span>
-            <span class="n">TopicArn</span> <span class="o">=</span> <span class="n">MY_SNS_TOPIC_ARN</span><span class="p">,</span>
-            <span class="n">Subject</span> <span class="o">=</span> <span class="s">'Instance Change State: '</span> <span class="o">+</span> <span class="n">instance_id</span><span class="p">,</span>
-            <span class="n">Message</span> <span class="o">=</span> <span class="s">'Instance '</span> <span class="o">+</span> <span class="n">instance_id</span> <span class="o">+</span> <span class="s">' has changed state.</span><span class="se">\n</span><span class="s">'</span> <span class="o">+</span>
-                      <span class="s">'State is: '</span> <span class="o">+</span> <span class="n">instance</span><span class="p">[</span><span class="s">'State'</span><span class="p">][</span><span class="s">'Name'</span><span class="p">]</span>
-        <span class="p">)</span>
-</code></pre></div></div>
-<p>Here is a snippet of my sns notification sent via email,</p>
+<p>An important lesson of life that I learnt, “Always be good to people, you never know when a person can change your life”.</p>
 
-<p><img src="/img/sns.png" alt="Markdown Monster icon" style="float: left; margin-right: 10px;" /></p>
+<p><img src="/img/james-and-me.jpeg" alt="Markdown Monster icon" style="float: center; margin-right: 50px;" /></p>
 
       </article>
 
@@ -308,19 +268,17 @@ Everytime, the specified instance changes state (start,stop,pending), cloudwatch
           Tags:
           
           
-            <a href="/tags#AWS">AWS</a>
+            <a href="/tags#Life">Life</a>
           
-            <a href="/tags#EC2">EC2</a>
+            <a href="/tags#Engineer">Engineer</a>
           
-            <a href="/tags#CLOUD">CLOUD</a>
+            <a href="/tags#Innovation">Innovation</a>
           
-            <a href="/tags#LAMBDA">LAMBDA</a>
+            <a href="/tags#Timing">Timing</a>
           
-            <a href="/tags#RDS">RDS</a>
+            <a href="/tags#Progress">Progress</a>
           
-            <a href="/tags#GITHUB">GITHUB</a>
-          
-            <a href="/tags#DYNAMODB">DYNAMODB</a>
+            <a href="/tags#Happy">Happy</a>
           
           
         </div>
@@ -337,7 +295,7 @@ Everytime, the specified instance changes state (start,stop,pending), cloudwatch
 
   
   <!--- Share on Twitter -->
-    <a href="https://twitter.com/intent/tweet?text=EC2-Instance-Scheduler-part-2+https://blog.avitechnos.com/2019-03-16-EC2-Instance-Scheduler-2/"
+    <a href="https://twitter.com/intent/tweet?text=First+year+at+Versent%21%21%21+https://blog.avitechnos.com/2019-08-02-First-Year-At-Versent/"
       class="btn btn-social-icon btn-twitter" title="Share on Twitter">
       <span class="fa fa-fw fa-twitter" aria-hidden="true"></span>
       <span class="sr-only">Twitter</span>
@@ -346,7 +304,7 @@ Everytime, the specified instance changes state (start,stop,pending), cloudwatch
 
   
   <!--- Share on Facebook -->
-    <a href="https://www.facebook.com/sharer/sharer.php?u=https://blog.avitechnos.com/2019-03-16-EC2-Instance-Scheduler-2/"
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https://blog.avitechnos.com/2019-08-02-First-Year-At-Versent/"
       class="btn btn-social-icon btn-facebook" title="Share on Facebook">
       <span class="fa fa-fw fa-facebook" aria-hidden="true"></span>
       <span class="sr-only">Facebook</span>
@@ -357,7 +315,7 @@ Everytime, the specified instance changes state (start,stop,pending), cloudwatch
 
   
   <!--- Share on LinkedIn -->
-    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://blog.avitechnos.com/2019-03-16-EC2-Instance-Scheduler-2/"
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://blog.avitechnos.com/2019-08-02-First-Year-At-Versent/"
       class="btn btn-social-icon btn-linkedin" title="Share on LinkedIn">
       <span class="fa fa-fw fa-linkedin" aria-hidden="true"></span>
       <span class="sr-only">LinkedIn</span>
@@ -373,12 +331,12 @@ Everytime, the specified instance changes state (start,stop,pending), cloudwatch
       <ul class="pager blog-pager">
         
         <li class="previous">
-          <a href="/2019-03-14-Ec2-Instance-Scheduler-1/" data-toggle="tooltip" data-placement="top" title="EC2-Instance-Scheduler">&larr; Previous Post</a>
+          <a href="/2019-07-08-Site-to-Site-VPN/" data-toggle="tooltip" data-placement="top" title="Site-to-Site VPN using OpenSwan EC2 Instance and Virtual Private Gateway">&larr; Previous Post</a>
         </li>
         
         
         <li class="next">
-          <a href="/2019-05-31-Connectivity-using-VPN-and-PrivateLink/" data-toggle="tooltip" data-placement="top" title="Networking Architecture - Hybrid">Next Post &rarr;</a>
+          <a href="/2019-10-03-Journey-of-Life(Associate-to-Engineer)/" data-toggle="tooltip" data-placement="top" title="Journey of life from Associate to an Engineer">Next Post &rarr;</a>
         </li>
         
       </ul>
@@ -419,8 +377,8 @@ Everytime, the specified instance changes state (start,stop,pending), cloudwatch
           <input type="url" id="comment-form-url" name="fields[url]" tabindex="4"/>
         </div>
         <div class="form-group hidden" style="display: none;">
-          <input type="hidden" name="options[origin]" value="https://blog.avitechnos.com/2019-03-16-EC2-Instance-Scheduler-2/">
-          <input type="hidden" name="options[slug]" value="EC2-Instance-Scheduler-2">
+          <input type="hidden" name="options[origin]" value="https://blog.avitechnos.com/2019-08-02-First-Year-At-Versent/">
+          <input type="hidden" name="options[slug]" value="First-Year-At-Versent">
           <label for="comment-form-location">Not used. Leave blank if you are a human.</label>
           <input type="text" id="comment-form-location" name="fields[hidden]" autocomplete="off"/>
           
