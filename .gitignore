@@ -105,7 +105,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-_config.yml
 staticman.yml
 s3_website.yml
 # Spyder project settings
